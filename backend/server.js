@@ -10,7 +10,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const upload = multer({ dest: 'uploads/' });
+// Vercel only allows writing to /tmp
+const upload = multer({ dest: '/tmp/uploads/' });
+
+// Health check for Vercel
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', message: 'Backend is running' });
+});
 
 // Create (Wrap) Certificate
 app.post('/api/cert/create', (req, res) => {
@@ -75,7 +81,11 @@ app.post('/api/cert/create', (req, res) => {
 
   } catch (error) {
     console.error("Error creating certificate:", error);
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ 
+      success: false, 
+      error: error.message,
+      hint: "Check if all environment variables (RPC_URL, PRIVATE_KEY, etc.) are set in Vercel."
+    });
   }
 });
 
@@ -116,7 +126,8 @@ app.post('/api/cert/issue', async (req, res) => {
     res.json({ success: true, txHash: tx.hash });
   } catch (error) {
     console.error("Error issuing certificate to blockchain:", error);
-    res.status(500).json({ success: false, error: error.message });
+    // Provide more detail in the JSON response to help debugging
+    res.status(500).json({ success: false, error: error.message, stack: error.stack });
   }
 });
 

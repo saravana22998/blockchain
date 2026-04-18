@@ -79,6 +79,14 @@ app.post('/api/cert/create', (req, res) => {
         "address": "123 Champs Avenue, Singapore",
         "contact": "+65 1234 5678"
       },
+      "saasTemplate": {
+        "backgroundUrl": "https://images.unsplash.com/photo-1621509376758-378393661b36?q=80&w=2670&auto=format&fit=crop",
+        "fields": [
+          { "id": "recipientName", "x": 50, "y": 45, "fontSize": "32px", "color": "#2c3e50" },
+          { "id": "courseName", "x": 50, "y": 60, "fontSize": "20px", "color": "#34495e" },
+          { "id": "issuedOn", "x": 50, "y": 80, "fontSize": "16px", "color": "#7f8c8d" }
+        ]
+      },
       "signature": {
         "name": "Jack Lim",
         "designation": "Executive Director",

@@ -178,3 +178,42 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* SaaS Dynamic Renderer Styles */
+.saas-renderer {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  overflow: hidden;
+  background: #fff;
+}
+
+.background-layer {
+  position: relative;
+  width: 100%;
+  line-height: 0;
+}
+
+.cert-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.fields-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.dynamic-field {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  font-family: 'Inter', sans-serif;
+  font-weight: bold;
+}

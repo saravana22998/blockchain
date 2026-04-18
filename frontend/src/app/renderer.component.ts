@@ -47,5 +47,4 @@ export class RendererComponent implements OnInit {
       }, "*");
     }, 100);
   }
-  }
 }

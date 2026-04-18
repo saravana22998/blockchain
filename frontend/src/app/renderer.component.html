@@ -1,0 +1,26 @@
+<div class="certificate-container" *ngIf="certificateData">
+  <div style="text-align: center; padding: 40px; font-family: sans-serif;">
+    <h1 *ngIf="certificateData?.issuers && certificateData?.issuers?.length > 0">{{ certificateData?.issuers[0]?.name }}</h1>
+    <h1 *ngIf="!certificateData?.issuers || certificateData?.issuers?.length === 0">Institution Name</h1>
+    
+    <p style="margin-top: 30px; font-size: 1.2em; color: #666;">This is to certify that</p>
+    
+    <h2 style="font-size: 2.5em; margin: 10px 0;">
+      {{ certificateData?.recipient?.name || certificateData?.recipientName || 'Student Name' }}
+    </h2>
+    
+    <p style="margin-top: 20px; font-size: 1.2em; color: #666;">has successfully completed the course</p>
+    
+    <h3 style="font-size: 1.8em; margin: 10px 0; color: #333;">
+      {{ certificateData.courseName || certificateData.name || 'Course Name' }}
+    </h3>
+    
+    <div style="margin-top: 50px;">
+      <p style="color: #666;">Issued on: {{ certificateData.issuedOn }}</p>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!certificateData" style="display: flex; height: 100vh; align-items: center; justify-content: center; color: #999;">
+  <p>Waiting for certificate data...</p>
+</div>

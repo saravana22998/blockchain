@@ -10,6 +10,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Robust Env Variable Access helper
+const getEnv = (key) => (process.env[key] || "").trim();
+
+const PRIVATE_KEY = getEnv('PRIVATE_KEY');
+const RPC_URL = getEnv('RPC_URL');
+const DOCUMENT_STORE_ADDRESS = getEnv('DOCUMENT_STORE_ADDRESS');
+
+console.log("--- OpenCerts Backend Init ---");
+console.log(`RPC_URL: ${RPC_URL ? "SET (starts with " + RPC_URL.substring(0, 10) + "...)" : "MISSING"}`);
+console.log(`DOCUMENT_STORE: ${DOCUMENT_STORE_ADDRESS || "MISSING"}`);
+console.log(`PRIVATE_KEY: ${PRIVATE_KEY ? (PRIVATE_KEY.length + " chars") : "MISSING"}`);
+console.log("------------------------------");
+
 // Vercel only allows writing to /tmp
 const upload = multer({ dest: '/tmp/uploads/' });
 
@@ -31,7 +44,7 @@ app.post('/api/cert/create', (req, res) => {
       "$template": {
         "name": "custom",
         "type": "EMBEDDED_RENDERER",
-        "url": process.env.RENDERER_URL || "https://demo-renderer.opencerts.io"
+        "url": process.env.RENDERER_URL || "https://blockchain-ruby-five.vercel.app/renderer"
       },
       "issuers": [
         {
@@ -40,10 +53,14 @@ app.post('/api/cert/create', (req, res) => {
           "uen": "U18274928E",
           "url": "https://www.moe.gov.sg",
           "email": "registrar@moe.gov.sg",
-          "documentStore": process.env.DOCUMENT_STORE_ADDRESS || "0xb87d777614cC710Ed9a69ae6AcdFECc9b81AaBde",
+          "documentStore": DOCUMENT_STORE_ADDRESS || "0xb87d777614cC710Ed9a69ae6AcdFECc9b81AaBde",
           "identityProof": {
             "type": "DNS-TXT",
             "location": process.env.DNS_NAME || "demo.champslms.com"
+          },
+          "network": {
+            "chain": "ETH",
+            "chainId": "11155111"
           }
         }
       ],
@@ -96,19 +113,9 @@ app.post('/api/cert/issue', async (req, res) => {
   }
   
   try {
-    const rpcUrl = process.env.RPC_URL;
-    const privateKey = process.env.PRIVATE_KEY;
-    const contractAddress = process.env.DOCUMENT_STORE_ADDRESS;
-
-    // Fallback to mock if completely unconfigured or just missing parts
-    if (!rpcUrl || !privateKey || !contractAddress) {
-      console.warn("⚠️  Missing .env configurations. Skipping actual blockchain transaction and simulating success for local dev.");
-      return res.json({
-          success: true,
-          message: 'Mock issuance successful! The root has been logged.',
-          txHash: '0xmocktransactionhash123456789'
-      });
-    }
+    const rpcUrl = RPC_URL;
+    const privateKey = PRIVATE_KEY;
+    const contractAddress = DOCUMENT_STORE_ADDRESS;
 
     // 1. Connect to Ethereum
     const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
@@ -126,8 +133,12 @@ app.post('/api/cert/issue', async (req, res) => {
     res.json({ success: true, txHash: tx.hash });
   } catch (error) {
     console.error("Error issuing certificate to blockchain:", error);
-    // Provide more detail in the JSON response to help debugging
-    res.status(500).json({ success: false, error: error.message, stack: error.stack });
+    res.status(500).json({ 
+      success: false, 
+      error: error.message, 
+      details: "Check your Vercel Environment Variables. Ensure PRIVATE_KEY is valid and DOCUMENT_STORE_ADDRESS is not prefixed with 'DOCUMENT_STORE_ADDRESS='.",
+      stack: error.stack 
+    });
   }
 });
 

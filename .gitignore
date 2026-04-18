@@ -1,0 +1,20 @@
+# Root Gitignore
+node_modules/
+dist/
+.env
+.env.local
+.env.*.local
+
+# Backend specific
+backend/node_modules/
+backend/*.log
+
+# Frontend specific
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/proxy.conf.json
+
+# OS files
+.DS_Store
+Thumbs.db

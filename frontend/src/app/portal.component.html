@@ -1,0 +1,71 @@
+<div class="main-container">
+  <header class="header">
+    <div class="logo">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#818CF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M2 17L12 22L22 17" stroke="#818CF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M2 12L12 17L22 12" stroke="#818CF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>LocalCerts Portal</span>
+    </div>
+  </header>
+
+  <main class="content">
+    <section class="intro">
+      <h1 class="title">Issue Verifiable Identities</h1>
+      <p class="subtitle">Create and download OpenCerts valid on the TradeTrust Framework.</p>
+    </section>
+
+    <div class="form-wrapper glass-panel">
+      <h2>Generate Certificate</h2>
+      
+      <form (ngSubmit)="generateCertificate()" #certForm="ngForm">
+        
+        <div class="input-group">
+          <label for="recipientName">Recipient Name</label>
+          <input type="text" id="recipientName" name="recipientName" [(ngModel)]="formData.recipientName" required placeholder="e.g. Jane Doe" class="modern-input">
+        </div>
+
+        <div class="input-group">
+          <label for="courseName">Course Name</label>
+          <input type="text" id="courseName" name="courseName" [(ngModel)]="formData.courseName" required placeholder="e.g. Master in Blockchain" class="modern-input">
+        </div>
+
+        <div class="input-group">
+          <label for="issuedOn">Issue Date</label>
+          <input type="date" id="issuedOn" name="issuedOn" [(ngModel)]="formData.issuedOn" required class="modern-input">
+        </div>
+
+        <button type="submit" class="submit-btn" [disabled]="!certForm.valid || isCreating">
+          <span *ngIf="!isCreating">Wrap & Download JSON</span>
+          <span *ngIf="isCreating" class="loader"></span>
+        </button>
+
+      </form>
+
+      <div class="status-messages">
+        <div class="success-message alert" *ngIf="successMessage">
+          {{ successMessage }}
+        </div>
+        <div class="error-message alert" *ngIf="errorMessage">
+          {{ errorMessage }}
+        </div>
+      </div>
+    </div>
+
+    <section class="instructions glass-panel">
+      <h3>Next Steps</h3>
+      <ol>
+        <li>Fill out the form above to generate the raw certificate.</li>
+        <li>The backend creates a cryptographically secure Merkle Root and wraps your data.</li>
+        <li>Your browser will download the resulting <code>.json</code> file.</li>
+        <li>Navigate to <a href="https://dev.opencerts.io" target="_blank" rel="noopener noreferrer">dev.opencerts.io</a> or <a href="https://dev.tradetrust.io" target="_blank" rel="noopener noreferrer">TradeTrust Dev</a>.</li>
+        <li>Drag and drop the downloaded JSON to preview your certificate structure!</li>
+      </ol>
+      <div class="note">
+        <strong>Note:</strong> Ensure your Vercel Environment Variables are correctly set (RPC_URL, PRIVATE_KEY, etc.) for issuance to work.
+      </div>
+    </section>
+
+  </main>
+</div>

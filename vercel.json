@@ -30,8 +30,7 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ],
-  "_metadata": {
-    "buildId": "final-master-fix-1776525946"
-  }
+  ]
 }
+
+

@@ -19,6 +19,10 @@
       "dest": "/backend/server.js"
     },
     {
+      "src": "/renderer/(.*)",
+      "dest": "/index.html"
+    },
+    {
       "src": "/renderer",
       "dest": "/index.html"
     },
@@ -27,5 +31,7 @@
       "dest": "/index.html"
     }
   ],
-  "cleanUrls": true
+  "_metadata": {
+    "buildId": "final-master-fix-1776525946"
+  }
 }

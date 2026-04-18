@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
   successMessage = '';
   errorMessage = '';
 
-  certificateData: any;
+  certificateData: any = null;
 
   constructor(private http: HttpClient) {
     // initialize defaults

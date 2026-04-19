@@ -1,10 +1,11 @@
-require('dotenv').config();
+require('dotenv').config({ path: require('path').join(__dirname, '.env') });
 const express = require('express');
 const cors = require('cors');
 const { wrapDocuments } = require('@govtechsg/open-attestation');
 const fs = require('fs');
 const multer = require('multer');
 const { ethers } = require('ethers');
+const path = require('path');
 
 const app = express();
 app.use(cors());
@@ -124,6 +125,14 @@ app.post('/api/cert/issue', async (req, res) => {
     const rpcUrl = RPC_URL;
     const privateKey = PRIVATE_KEY;
     const contractAddress = DOCUMENT_STORE_ADDRESS;
+
+    if (!rpcUrl || !privateKey || !contractAddress) {
+      return res.status(500).json({
+        success: false,
+        error: "Configuration missing",
+        details: `Missing: ${[!rpcUrl ? 'RPC_URL' : '', !privateKey ? 'PRIVATE_KEY' : '', !contractAddress ? 'DOCUMENT_STORE_ADDRESS' : ''].filter(Boolean).join(', ')}. Please check your .env file and RESTART the server.`
+      });
+    }
 
     // 1. Connect to Ethereum
     const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
